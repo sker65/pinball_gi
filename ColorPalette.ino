@@ -77,16 +77,73 @@ void loop() {
 	FastLED.delay(1000 / UPDATES_PER_SECOND);
 #endif
 
-#if 1
-//	if (Serial.available()) {
-//		while (Serial.available())
-//			Serial.read();
-//		if (ledIndex++ > NUM_LEDS) {
-//			ledIndex = 0;
-//		}
-//		Serial.print("LED: "); Serial.println(ledIndex);
-//	}
 
+#if 1
+	static int red = 0;
+	static int green = 0;
+	static int blue = 0;
+	static CRGB currentColor(0, 0, 0);
+	if (Serial.available() ) {
+		int ch=0;
+		while (Serial.available())
+			ch = Serial.read();
+
+		switch( ch ) {
+		case 'a': red+=10; break;
+		case 'y': red-=10; break;
+		case 's': red+=1; break;
+		case 'x': red-=1; break;
+
+		case 'd': green+=10; break;
+		case 'c': green-=10; break;
+		case 'f': green+=1; break;
+		case 'v': green-=1; break;
+
+		case 'g': blue+=10; break;
+		case 'b': blue-=10; break;
+		case 'h': blue+=1; break;
+		case 'n': blue-=1; break;
+		}
+		if(red > 255) red=255;
+		if(red < 0 ) red = 0;
+		if(green > 255) green=255;
+		if(green < 0 ) green = 0;
+		if(blue > 255) blue=255;
+		if(blue < 0 ) blue = 0;
+
+		currentColor = CRGB(red,green,blue);
+
+		Serial.print("current Color: ");
+		Serial.print(red);Serial.print(":");
+		Serial.print(green);Serial.print(":");
+		Serial.println(blue);
+
+		for (int i = 0; i < NUM_LEDS; i++) {
+			leds[i] = currentColor;
+		}
+		FastLED.show();
+	}
+#endif
+
+
+#if 0
+	if (Serial.available()) {
+		while (Serial.available())
+			Serial.read();
+		if (ledIndex++ > NUM_LEDS) {
+			ledIndex = 0;
+		}
+		Serial.print("LED: "); Serial.println(ledIndex);
+		CRGB white(255, 255, 255);
+		CRGB black(0, 0, 0);
+		for (int i = 0; i < NUM_LEDS; i++) {
+			leds[i] = (i == ledIndex ? white : black);
+		}
+		FastLED.show();
+	}
+#endif
+
+#if 0
 	if( now > next  ) {
 		next = now + 100;
 		if (ledIndex++ > NUM_LEDS) {
